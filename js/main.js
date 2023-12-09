@@ -501,7 +501,7 @@ const selectMenuChangeEventHandler = async (event) => {
 
 const initPage = async () => {
   const users = await getUsers();
-  const select = populateSelectMenu();
+  const select = populateSelectMenu(users);
 
   return [users, select];
 };
