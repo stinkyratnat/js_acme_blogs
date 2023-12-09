@@ -306,13 +306,12 @@ const addButtonListeners = () => {
   const buttonsList = document.querySelectorAll("main button");
   if (buttonsList.length === 0) return buttonsList;
 
-  // CHECK LATER AFTER FINISHING TOGGLECOMMENTS
-  buttonsList.forEach((button) => {
+  for (const button of buttonsList)  {
     let id = button.dataset.postId;
     if (id) {
       button.addEventListener("click", function (e) {toggleComments(e, id)}, false);
     }
-  });
+  };
 
   return buttonsList;
 }
@@ -435,14 +434,15 @@ const displayComments = async (postId) => {
 const createPosts = async (posts) => {
   if (!posts) return;
   const fragment = document.createDocumentFragment();
-  posts.forEach(async (post) => {
+
+  for (const post of posts) {
     const article = document.createElement("article");
     const h2 = createElemWithText("h2", post.title);
     const p = createElemWithText("p", post.body);
     const p2 = createElemWithText("p", `Post ID: ${post.id}`);
     const author = await getUser(post.userId);
     const p3 = createElemWithText("p", `Author: ${author.name} with ${author.company.name}`);
-    const p4 = createElemWithText("p", `${author.company.catchphrase}`);
+    const p4 = createElemWithText("p", `${author.company.catchPhrase}`);
     const button = createElemWithText("button", "Show Comments");
     button.dataset.postId = post.id;
     article.append(h2, p, p2, p3, p4, button);
@@ -451,17 +451,15 @@ const createPosts = async (posts) => {
     article.append(section);
 
     fragment.append(article);
-  });
+  }
   return fragment;
 };
 
 const displayPosts = async (posts) => {
-  if (!posts) return;
-
   const main = document.querySelector("main");
 
   const element = posts ? await createPosts(posts) : createElemWithText("p", "Select an Employee to display their posts.", "default-text");
-
+  
   main.append(element);
   return element;
 };
@@ -482,16 +480,30 @@ const refreshPosts = async (data) => {
   const main = deleteChildElements("main");
   const fragment = await displayPosts(data);
   const addButtons = addButtonListeners();
+  console.log(addButtons);
 
   return [removeButtons, main, fragment, addButtons];
 };
 
-const selectMenuChangeEventHandler = () => {
+const selectMenuChangeEventHandler = async (event) => {
+  if (!event) return;
+  const selectMenu = document.getElementById("selectMenu");
+  selectMenu.disabled = true;
 
+  const userId = event.target.value || 1;
+  const posts = await getUserPosts (userId);
+  const refreshPostsArray = await refreshPosts(posts);
+
+  selectMenu.disabled = false;
+
+  return [userId, posts, refreshPostsArray];
 };
 
-const getUinitPagesers = () => {
+const initPage = async () => {
+  const users = await getUsers();
+  const select = populateSelectMenu();
 
+  return [users, select];
 };
 
 const initApp = () => {
