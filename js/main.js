@@ -507,5 +507,10 @@ const initPage = async () => {
 };
 
 const initApp = () => {
+  initPage();
+  const selectMenu = document.getElementById("selectMenu");
+  selectMenu.addEventListener("change", selectMenuChangeEventHandler, false);
 
 };
+
+document.addEventListener("DOMContentLoaded", initApp, false);
