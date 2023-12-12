@@ -476,8 +476,10 @@ const toggleComments = (event, postId) => {
 const refreshPosts = async (data) => {
   if (!data) return;
 
+  const mainElement = document.querySelector("main");
+
   const removeButtons = removeButtonListeners();
-  const main = deleteChildElements("main");
+  const main = deleteChildElements(mainElement);
   const fragment = await displayPosts(data);
   const addButtons = addButtonListeners();
   console.log(addButtons);
